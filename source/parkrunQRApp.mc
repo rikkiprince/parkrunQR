@@ -21,6 +21,11 @@ class parkrunQRApp extends Application.AppBase {
         return [ new parkrunQRView() ] as Array<Views or InputDelegates>;
     }
 
+    function onSettingsChanged() {
+        System.println("SETTINGS CHANGED");
+        WatchUi.requestUpdate();
+    }
+
 }
 
 function getApp() as parkrunQRApp {

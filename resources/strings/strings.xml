@@ -1,3 +1,4 @@
 <strings>
     <string id="AppName">parkrun QR</string>
+    <string id="parkrunBarcodeNumber">parkrun Barcode</string>
 </strings>

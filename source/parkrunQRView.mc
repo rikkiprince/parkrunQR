@@ -2,6 +2,8 @@ import Toybox.Graphics;
 import Toybox.WatchUi;
 import Toybox.System;
 import Toybox.Communications;
+import Toybox.Application.Storage;
+import Toybox.Application.Properties;
 
 class parkrunQRView extends WatchUi.View {
     var image;
@@ -18,6 +20,7 @@ class parkrunQRView extends WatchUi.View {
         if(responseCode == 200) {
             image = data;
             WatchUi.requestUpdate();
+            Storage.setValue("QRcode", image);
         } else {
             image = null;
         }
@@ -37,13 +40,17 @@ class parkrunQRView extends WatchUi.View {
     }
 
     function determineSizes() {
-
+        // Calc biggest square to fit
+        var deviceSettings = System.getDeviceSettings();
+        var shape = deviceSettings.screenShape; // SCREEN_SHAPE_ROUND, SCREEN_SHAPE_RECTANGLE, etc
+        var width = deviceSettings.screenWidth;
+        var height = deviceSettings.screenHeight;
     }
 
     // Load your resources here
     function onLayout(dc as Dc) as Void {
         determineSizes();
-        initiateQRCodeRequest("A999999", 170);
+
         setLayout(Rez.Layouts.MainLayout(dc));
     }
 
@@ -57,12 +64,15 @@ class parkrunQRView extends WatchUi.View {
     function onUpdate(dc as Dc) as Void {
         // Call the parent onUpdate function to redraw the layout
         View.onUpdate(dc);
-
-        // Calc biggest square to fit
-        var deviceSettings = System.getDeviceSettings();
-        var shape = deviceSettings.screenShape; // SCREEN_SHAPE_ROUND, SCREEN_SHAPE_RECTANGLE, etc
-        var width = deviceSettings.screenWidth;
-        var height = deviceSettings.screenHeight;
+        
+        var parkrunBarcodeNumber = Properties.getValue("parkrunBarcodeNumber");
+        var lastRetrievedForBarcodeNumber = Storage.getValue("lastRetrievedForBarcodeNumber");
+        System.println(parkrunBarcodeNumber+" == "+lastRetrievedForBarcodeNumber);
+        image = Storage.getValue("QRcode");
+        if(image == null or parkrunBarcodeNumber != lastRetrievedForBarcodeNumber) {
+            initiateQRCodeRequest(parkrunBarcodeNumber, 170);
+            Storage.setValue("lastRetrievedForBarcodeNumber", parkrunBarcodeNumber);
+        }
 
         // Render QR Code when it is available
         if(image != null) {

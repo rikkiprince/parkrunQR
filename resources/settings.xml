@@ -1,0 +1,5 @@
+<settings>
+  <setting propertyKey="@Properties.parkrunBarcodeNumber" title="@Strings.parkrunBarcodeNumber">
+    <settingConfig type="alphaNumeric" required="true" />
+  </setting>
+</settings>
